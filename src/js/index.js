@@ -12,7 +12,7 @@ const countryInfo=document.querySelector(".country-info");
 
 
 
-searchCountry.addEventListener('input',Debounce(onSearchCountry),DEBOUNCE_DELAY);
+searchCountry.addEventListener('input',Debounce(onSearchCountry,DEBOUNCE_DELAY));
 
 
 function onSearchCountry(e){
@@ -24,24 +24,33 @@ if(countries=== ''){
 
 apiCountries(countries)
 .then(data=>insertContent(data))
-.catch(error => notFound(error));
+.catch(err =>{if(err.code ===404   ){
+    notFound()
+}else{
+    Notiflix.Notify.failure('Unknow error');
+}
+
+} );
 };
 
 const  insertContent = (countries)=>{
-const result=listCountry(countries);
+
 
 if(countries.length===1){
-    countryList.innerHTML=result;
+   
     const resultInfo=countryInfoMarkup(countries);
     countryInfo.insertAdjacentHTML('beforeend',resultInfo)
     
-}else if(countries.length <10 && countries.length >1){
+}else if(countries.length <10 &&  countries.length >1){
+  const result=listCountry(countries);
     countryList.innerHTML=result;
     countryInfo.innerHTML='';
-}else{
+}else if(countries.length >10){
     Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
-    removeData();
-};
+ 
+}else{
+    Notiflix.Notify.failure('Invalid input');
+}
 
 };
 const listCountry =(list)=>list.reduce((acc,item)=>acc+countryMarkup(item), '');
@@ -57,7 +66,7 @@ const countryInfoMarkup =(country)=>{
         const info = `<p class="country-info__text"><span>Capital:</span>${capital}</p>
         <p class="country-info__text"><span>Population:</span>${population}</p>
         <p class="country-info__text"><span>Languages:</span>${language}</p>`;
-        return info;
+      return info;
 };
 const notFound = () => {
     Notiflix.Notify.failure('Oops, there is no country with that name')

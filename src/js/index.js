@@ -24,7 +24,8 @@ if(countries=== ''){
 
 apiCountries(countries)
 .then(data=>insertContent(data))
-.catch(err =>{if(err.code ===404   ){
+.catch(err =>{
+    if(err.code ===404){
     notFound()
 }else{
     Notiflix.Notify.failure('Unknow error');

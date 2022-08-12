@@ -17,16 +17,17 @@ searchCountry.addEventListener('input',Debounce(onSearchCountry,DEBOUNCE_DELAY))
 
 function onSearchCountry(e){
 const countries =e.target.value.trim();
+removeData()
 if(countries=== ''){
-    removeData()
-    return;
+
+return;
 };
 
 apiCountries(countries)
 .then(data=>insertContent(data))
 .catch(err =>{
-    if(err.code ===404){
-    notFound()
+if(err.code ===404){
+notFound()
 }else{
     Notiflix.Notify.failure('Unknow error');
 }
@@ -43,14 +44,15 @@ if(countries.length===1){
     countryInfo.insertAdjacentHTML('beforeend',resultInfo)
     
 }else if(countries.length <10 &&  countries.length >1){
-  const result=listCountry(countries);
-    countryList.innerHTML=result;
-    countryInfo.innerHTML='';
+const result=listCountry(countries);
+
+countryList.innerHTML=result;
+    
 }else if(countries.length >10){
     Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
  
 }else{
-    Notiflix.Notify.failure('Invalid input');
+    Notiflix.Notify.failure('Unknow Error');
 }
 
 };
@@ -71,7 +73,7 @@ const countryInfoMarkup =(country)=>{
 };
 const notFound = () => {
     Notiflix.Notify.failure('Oops, there is no country with that name')
-    removeData();
+    
 };
 
 const removeData = () => {
